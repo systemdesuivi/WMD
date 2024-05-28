@@ -1,0 +1,174 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <ctime>
+
+using namespace std;
+
+// Classe Date pour gérer les dates
+class Date {
+private:
+    int jour;
+    int mois;
+    int annee;
+
+public:
+    // Constructeur
+    Date(int jour, int mois, int annee) : jour(jour), mois(mois), annee(annee) {}
+
+    // Méthode pour afficher la date
+    void afficherDate() {
+        cout << jour << "/" << mois << "/" << annee;
+    }
+};
+
+// Classe Vehicule
+class Vehicule {
+protected:
+    string marque;
+    string modele;
+    int annee;
+    double prix;
+
+public:
+    // Constructeur
+    Vehicule(string marque, string modele, int annee, double prix) : marque(marque), modele(modele), annee(annee), prix(prix) {}
+
+    // Méthode virtuelle pour afficher les détails du véhicule
+    virtual void afficherDetails() {
+        cout << "Marque: " << marque << ", Modele: " << modele << ", Annee: " << annee << ", Prix: " << prix << " euros";
+    }
+};
+
+// Classe Voiture dérivée de Vehicule
+class Voiture : public Vehicule {
+private:
+    int nbPortes;
+
+public:
+    // Constructeur
+    Voiture(string marque, string modele, int annee, double prix, int nbPortes) : Vehicule(marque, modele, annee, prix), nbPortes(nbPortes) {}
+
+    // Méthode pour afficher les détails de la voiture
+    void afficherDetails() override {
+        cout << "Voiture - ";
+        Vehicule::afficherDetails();
+        cout << ", Nombre de portes: " << nbPortes;
+    }
+};
+
+// Classe Moto dérivée de Vehicule
+class Moto : public Vehicule {
+private:
+    string type;
+
+public:
+    // Constructeur
+    Moto(string marque, string modele, int annee, double prix, string type) : Vehicule(marque, modele, annee, prix), type(type) {}
+
+    // Méthode pour afficher les détails de la moto
+    void afficherDetails() override {
+        cout << "Moto - ";
+        Vehicule::afficherDetails();
+        cout << ", Type: " << type;
+    }
+};
+
+// Classe Client pour gérer les utilisateurs
+class Client {
+private:
+    string nom;
+    string adresse;
+    string email;
+
+public:
+    // Constructeur
+    Client(string nom, string adresse, string email) : nom(nom), adresse(adresse), email(email) {}
+
+    // Méthode pour afficher les détails du client
+    void afficherDetails() {
+        cout << "Nom: " << nom << ", Adresse: " << adresse << ", Email: " << email;
+    }
+};
+
+// Classe Location pour gérer la location de véhicules
+class Location {
+private:
+    Client client;
+    Vehicule* vehicule;
+    Date dateDebut;
+    Date dateFin;
+    bool terminee;
+
+public:
+    // Constructeur
+    Location(Client client, Vehicule* vehicule, Date dateDebut, Date dateFin) : client(client), vehicule(vehicule), dateDebut(dateDebut), dateFin(dateFin), terminee(false) {}
+
+    // Méthode pour afficher les détails de la location
+    void afficherDetails() {
+        cout << "Client: ";
+        client.afficherDetails();
+        cout << ", Vehicule: ";
+        vehicule->afficherDetails();
+        cout << ", Date de début: ";
+        dateDebut.afficherDate();
+        cout << ", Date de fin: ";
+        dateFin.afficherDate();
+        if (terminee)
+            cout << ", Location terminée";
+        else
+            cout << ", Location en cours";
+    }
+
+    // Méthode pour marquer la location comme terminée
+    void terminerLocation() {
+        terminee = true;
+    }
+};
+
+// Classe GestionnaireLocations pour gérer les locations
+class GestionnaireLocations {
+private:
+    vector<Location> locations;
+
+public:
+    // Méthode pour ajouter une location
+    void ajouterLocation(Location location) {
+        locations.push_back(location);
+    }
+
+    // Méthode pour afficher toutes les locations
+    void afficherLocations() {
+        cout << "Locations en cours :" << endl;
+        for (auto& location : locations) {
+            location.afficherDetails();
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    // Création de quelques véhicules
+    Voiture voiture("Toyota", "Corolla", 2020, 25000, 5);
+    Moto moto("Honda", "CBR500R", 2019, 8000, "Sportive");
+
+    // Création de quelques clients
+    Client client1("Jean Dupont", "1 Rue de la Paix", "jean.dupont@example.com");
+    Client client2("Marie Durand", "5 Avenue des Champs-Élysées", "marie.durand@example.com");
+
+    // Création de quelques locations
+    Date dateDebut(8, 5, 2024);
+    Date dateFin(15, 5, 2024);
+    Location location1(client1, &voiture, dateDebut, dateFin);
+    Location location2(client2, &moto, dateDebut, dateFin);
+
+    // Ajout des locations au gestionnaire de locations
+    GestionnaireLocations gestionnaireLocations;
+    gestionnaireLocations.ajouterLocation(location1);
+    gestionnaireLocations.ajouterLocation(location2);
+
+    // Affichage des locations
+    gestionnaireLocations.afficherLocations();
+
+    return 0;
+}
